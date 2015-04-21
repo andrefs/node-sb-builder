@@ -3,27 +3,37 @@
 // Require our dependencies
 var program = require('commander');
 var ytdl    = require('ytdl-core');
-var fs      = require('fs');
+var fs      = require('fs-extra');
 var async   = require('async');
 var log     = console.log;
 var mkdirp  = require('mkdirp');
+var URL     = require('url');
+var qs      = require('querystring');
+var sprintf = require("sprintf-js").sprintf;
+var spawn   = require('child_process').spawnSync;
 var config  = {
-    sourcesPath     : './sources',
-    soundsPath      : './sounds',
-    tmpPath         : './tmp',
-    manifestVersion : 'v1',
-    defaultClipMargin: '2'
+    sourcesPath       : './sources',
+    soundsPath        : './sounds',
+    tmpPath           : './tmp',
+    manifestVersion   : 'v1',
+    defaultClipMargin : '2',
+    soundEditCommand  : 'audacity'
 };
 
 program.version('0.0.1');
+
+
+program.command('init <name>')
+    .description('kickoff a new soundboard project')
+    .action(init);
 
 program.command('download <URL>')
     .description('download sound from Youtube URL provided, and save metadata in manifest')
     .action(download);
 
-program.command('init <name>')
-    .description('kickoff a new soundboard project')
-    .action(init);
+program.command('snip <ID|URL>')
+    .description('open external sound edition application to extract sound snippet')
+    .action(snip);
 
 program.command('render')
     .description('generates soundboard website')
@@ -54,6 +64,61 @@ function init(name){
         }
     );
 };
+
+function snip(){
+    var arg = arguments[0];
+    var manifest;
+    var snipData = {};
+
+    async.waterfall([
+        // Read manifest
+        function(next){ _read_manifest(next); },
+        // Handle arguments and check if video ID exists
+        function(manif, next){
+            manifest = manif;
+            var info = _snip_handle_arguments(arg);
+
+            if(! info.id in manifest.sources){
+                return next({
+                    error: 'no_such_video',
+                    no_such_video: 'Video with ID '+id+' has not been downloaded yet!'
+                });
+            }
+            snipData.id = sprintf("%06d",+Object.keys(manifest.sounds).length+1);
+            snipData.path = config.soundsPath+'/'+snipData.id;
+
+            var srcPath = manifest.sources[info.id].path;
+            fs.copy(srcPath, snipData.path, next);
+        },
+        function(next){
+            spawn(config.soundEditCommand, [snipData.path]);
+        }],
+        function(err){
+        }
+    );
+}
+
+function _snip_handle_arguments(){
+    var id, t, url;
+
+    if(arguments[0].match(/youtube\.com/)){
+        var urlInfo = URL.parse(arguments[0]);
+        var params = qs.parse(urlInfo.query);
+        id = params.v;
+        t = params.t;
+    } else if(arguments[0].match(/youtu\.be/)){
+        var urlInfo = URL.parse(arguments[0]);
+        var params = qs.parse(urlInfo.query);
+        urlInfo.pathname.match(/^\/(\w+)$/);
+        id = RegExp.$1
+        t = params.t;
+    }
+    else { id = arguments[0]; }
+    var info = {};
+    if(t){ info.t = t; }
+    info.id = id;
+    return info;
+}
 
 function render(){
     console.warn('Not implemented yet!');
