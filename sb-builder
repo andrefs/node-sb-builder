@@ -1,0 +1,159 @@
+#!/usr/bin/env node
+
+// Require our dependencies
+var program = require('commander');
+var ytdl    = require('ytdl-core');
+var fs      = require('fs');
+var async   = require('async');
+var log     = console.log;
+var mkdirp  = require('mkdirp');
+var config  = {
+    sourcesPath : './sources',
+    soundsPath  : './sounds',
+    tmpPath     : './tmp'
+};
+
+program.version('0.0.1');
+
+program.command('download <URL>')
+    .description('download sound from Youtube URL provided, and save metadata in manifest')
+    .action(download);
+
+program.command('init <name>')
+    .description('kickoff a new soundboard project')
+    .action(init);
+
+program.command('render')
+    .description('generates soundboard website')
+    .action(render);
+
+program.command('manifest', 'Perform operations based on the manifest');
+
+
+/*************
+ * Functions *
+ *************/
+
+function init(name){
+    async.waterfall([
+        function(next){
+            var folders = [
+                config.tmpPath,
+                config.sourcesPath,
+                config.soundsPath
+            ];
+            async.each(folders, mkdirp, next);
+        },
+        function(next){
+            var manifest = {
+                sources  : {},
+                sounds   : {},
+                metadata : {
+                    name: name
+                }
+            };
+            fs.writeFile('manifest.json', JSON.stringify(manifest, {}, 4), next);
+        }],
+        function(err){
+            if(err){ console.log('Error setting up basic stuff', err); }
+        }
+    );
+};
+
+function render(){
+    console.warn('Not implemented yet!');
+};
+
+function download(videoURL){
+    async.waterfall([
+        // Read manifest
+        function(next){
+            _read_manifest(next);
+        },
+        // Download video sound track
+        function(manifest, next){
+            _download_video(videoURL, next);
+        },
+        // Store information in manifest
+        function(videoData, manifest){
+            _write_manifest(videoData, manifest);
+        }],
+        function(err){
+            console.log(err?err:'no err');
+        }
+    );
+};
+
+function _download_video(videoURL, callback){
+    async.waterfall([
+        // Get video information
+        function(next){
+            ytdl.getInfo(videoURL, next);
+        },
+        // Get video file
+        function(info, next){
+            console.log('INFO',info);
+
+            var videoData = {};
+            videoData.id = info.video_id;
+            videoData.tmpPath = config.tmpPath+'/'+videoData.id;
+            videoData.title = info.title;
+            videoData.length = info.length_seconds;
+
+            var video = ytdl.downloadFromInfo(info, {filter: 'audioonly'});
+            video.pipe(fs.createWriteStream(videoData.tmpPath));
+
+
+            video.on('error', next);
+
+            video.on('format', function(format){
+                videoData.size = format.size;
+                var videoData.path = config.sourcesPath+'/'+videoData.id+'.'+format.container;
+
+                var pos = 0;
+                video.on('data', function(data) {
+                    pos += data.length;
+                    if (videoData.size) {
+                        var percent = (pos / videoData.size * 100).toFixed(2);
+                        process.stdout.cursorTo(0);
+                        process.stdout.clearLine(1);
+                        process.stdout.write(percent + '%');
+                    }
+                });
+            });
+            video.on('end',function(err){
+                if(err){ return next(err); }
+                return next(null, videoData);
+            });
+        },
+        // Move video file to final path
+        function(videoData){
+            var tmpPath = videoData.tmpPath;
+            var finalPath = videoData.finalPath;
+            fs.rename(tmpPath, finalPath, next);
+        }],
+        function(err){
+        }
+    );
+};
+
+
+function _read_manifest(callback){
+    async.series([
+        function(next){
+            return fs.exists('manifest.json') ?
+                next('manifest.json not found!') :
+                next();
+        },
+        function(next){
+            fs.readFile('manifest.json', function(err, data){
+                if(err){ console.log('Could not read manifest.json:', err); }
+                return next(null, JSON.parse(data));
+            });
+        }],
+        callback
+    );
+};
+
+program.parse(process.argv);
+if(!program.args.length){ program.help(); }
