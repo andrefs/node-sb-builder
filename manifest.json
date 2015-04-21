@@ -1,7 +1,16 @@
 {
-    "sources": {},
-    "sounds": {},
     "metadata": {
         "name": "instantmg"
-    }
+    },
+    "sources": [
+        {
+            "id": "U4Ag5WmOp1s",
+            "tmpPath": "./tmp/U4Ag5WmOp1s",
+            "title": "Marco Paulo \"Ninguem Ninguem\"",
+            "length": "179",
+            "size": "2868047",
+            "path": "./sources/U4Ag5WmOp1s.mp4"
+        }
+    ],
+    "sounds": []
 }

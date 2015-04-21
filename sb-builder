@@ -8,9 +8,11 @@ var async   = require('async');
 var log     = console.log;
 var mkdirp  = require('mkdirp');
 var config  = {
-    sourcesPath : './sources',
-    soundsPath  : './sounds',
-    tmpPath     : './tmp'
+    sourcesPath     : './sources',
+    soundsPath      : './sounds',
+    tmpPath         : './tmp',
+    manifestVersion : 'v1',
+    defaultClipMargin: '2'
 };
 
 program.version('0.0.1');
@@ -45,14 +47,7 @@ function init(name){
             async.each(folders, mkdirp, next);
         },
         function(next){
-            var manifest = {
-                sources  : {},
-                sounds   : {},
-                metadata : {
-                    name: name
-                }
-            };
-            fs.writeFile('manifest.json', JSON.stringify(manifest, {}, 4), next);
+            _save_manifest(name, next);
         }],
         function(err){
             if(err){ console.log('Error setting up basic stuff', err); }
@@ -65,26 +60,34 @@ function render(){
 };
 
 function download(videoURL){
+    var manifest;
     async.waterfall([
         // Read manifest
         function(next){
             _read_manifest(next);
         },
         // Download video sound track
-        function(manifest, next){
-            _download_video(videoURL, next);
+        function(data, next){
+            manifest = data;
+            _download_video(videoURL, manifest, next);
         },
         // Store information in manifest
-        function(videoData, manifest){
-            _write_manifest(videoData, manifest);
+        function(videoData, next){
+            _write_source_in_manifest(videoData, manifest, next);
         }],
         function(err){
-            console.log(err?err:'no err');
+            if(err){ error(err); }
         }
     );
 };
 
-function _download_video(videoURL, callback){
+function error(err){
+    console.log('[ERROR]',err.error,':',err.message);
+};
+
+function _download_video(videoURL, manifest, callback){
+    var videoData;
+
     async.waterfall([
         // Get video information
         function(next){
@@ -92,10 +95,11 @@ function _download_video(videoURL, callback){
         },
         // Get video file
         function(info, next){
-            console.log('INFO',info);
-
             var videoData = {};
             videoData.id = info.video_id;
+            if(manifest.sources[videoData.id]){
+                return next({error: 'already_downloaded', message: 'Video already downloaded!'});
+            }
             videoData.tmpPath = config.tmpPath+'/'+videoData.id;
             videoData.title = info.title;
             videoData.length = info.length_seconds;
@@ -108,7 +112,7 @@ function _download_video(videoURL, callback){
 
             video.on('format', function(format){
                 videoData.size = format.size;
-                var videoData.path = config.sourcesPath+'/'+videoData.id+'.'+format.container;
+                videoData.path = config.sourcesPath+'/'+videoData.id+'.'+format.container;
 
                 var pos = 0;
                 video.on('data', function(data) {
@@ -127,31 +131,95 @@ function _download_video(videoURL, callback){
             });
         },
         // Move video file to final path
-        function(videoData){
+        function(vData, next){
+            videoData = vData;
             var tmpPath = videoData.tmpPath;
-            var finalPath = videoData.finalPath;
+            var finalPath = videoData.path;
             fs.rename(tmpPath, finalPath, next);
         }],
         function(err){
+            return callback(err, videoData);
         }
     );
 };
 
+function _write_source_in_manifest(videoData, manifest, callback){
+    delete videoData[tmpPath];
+    manifest.sources[videoData.id] = videoData;
+    return _save_manifest(manifest, callback);
+};
+
+function _save_manifest(){
+    var manifest, name, callback;
+    if(typeof arguments[0] === 'string'){
+        name = arguments[0];
+        callback = arguments[1];
+        manifest = {
+            sources  : {},
+            sounds   : {},
+            metadata : {
+                name: sbname,
+                manifestVersion : config.manifestVersion
+            }
+        };
+    } else {
+        manifest = arguments[0];
+        callback = arguments[1];
+    }
+
+    var manif = {
+        metadata : manifest.metadata,
+        sources  : [],
+        sounds   : []
+    };
+
+    for (srcID in manifest.sources){
+        manif.sources.push(manifest.sources[srcID]);
+    }
+
+
+    var snds = [];
+    for (sndID in manifest.sounds){
+        snds.push(manifest.sounds[sndID]);
+    }
+    snds.sort(
+        function(a,b){
+            return a.dateAdded > b.dateAdded ? true : false;
+        }).forEach(function(snd){
+            manif.sounds.push(snd);
+        });
+
+    fs.writeFile('manifest.json', JSON.stringify(manif, {}, 4), callback);
+};
 
 function _read_manifest(callback){
-    async.series([
+    async.waterfall([
         function(next){
             return fs.exists('manifest.json') ?
                 next('manifest.json not found!') :
                 next();
         },
         function(next){
-            fs.readFile('manifest.json', function(err, data){
+            fs.readFile('manifest.json',{encoding:'utf8'}, function(err, data){
                 if(err){ console.log('Could not read manifest.json:', err); }
                 return next(null, JSON.parse(data));
             });
         }],
-        callback
+        function(err, data){
+            if(err){ return callback(err); }
+            var manifest = {
+                sources : {},
+                sounds: {},
+                metadata: data.metadata
+            };
+            data.sources.forEach(function(src){
+                manifest.sources[src.id] = src;
+            });
+            data.sounds.forEach(function(snd){
+                manifest.sounds[snd.id] = snd;
+            });
+            return callback(null, manifest);
+        }
     );
 };
 
