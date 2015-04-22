@@ -1,0 +1,78 @@
+#!/usr/bin/env node
+
+var program  = require('commander');
+var config   = require('./config').config;
+var fs       = require('fs-extra');
+var manifest = require('./lib/manifest').read();
+var ytdl     = require('ytdl-core');
+var async    = require('async');
+
+program.parse(process.argv);
+
+if(program.args.length !== 1){
+    console.log('Usage: sb-builder download [options] <URL>');
+    process.exit();
+}
+
+var videoURL = program.args[0];
+
+async.waterfall([
+    // Get video information
+    function(next){
+        ytdl.getInfo(videoURL, next);
+    },
+    // Get video file
+    function(info, next){
+        var source = {};
+        source.id = info.video_id;
+        if(manifest.sources[source.id]){
+            return next({error: 'already_downloaded', message: 'Video already downloaded!'});
+        }
+        source.tmpPath = config.tmpPath+'/'+source.id;
+        source.title = info.title;
+        source.length = +info.length_seconds;
+
+        var video = ytdl.downloadFromInfo(info, {filter: 'audioonly'});
+        video.pipe(fs.createWriteStream(source.tmpPath));
+
+
+        video.on('error', next);
+
+        video.on('format', function(format){
+            source.size = +format.size;
+            source.path = config.sourcesPath+'/'+source.id+'.'+format.container;
+
+            var pos = 0;
+            video.on('data', function(data) {
+                pos += data.length;
+                if (source.size) {
+                    var percent = (pos / source.size * 100).toFixed(2);
+                    process.stdout.cursorTo(0);
+                    process.stdout.clearLine(1);
+                    process.stdout.write(percent + '%');
+                }
+            });
+        });
+        video.on('end',function(err){
+            if(err){ return next(err); }
+            process.stdout.write("\n");
+            console.log('    finished downloading');
+            return next(null, source);
+        });
+    },
+    // Move video file to final path
+    function(vData, next){
+        source = vData;
+        var tmpPath = source.tmpPath;
+        var finalPath = source.path;
+        fs.rename(tmpPath, finalPath, next);
+    }],
+    function(err){
+        if(err){ console.log(err);           }
+        else { manifest.writeSource(source); }
+        //manifest.save();
+        process.exit();
+    }
+);
+
+

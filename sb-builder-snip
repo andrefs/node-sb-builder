@@ -1,0 +1,64 @@
+#!/usr/bin/env node
+
+var program  = require('commander');
+var config   = require('./config').config;
+var sprintf  = require("sprintf-js").sprintf;
+var async    = require('async');
+var fs       = require('fs-extra');
+var spawn    = require('child_process').spawnSync;
+var manifest = require('./lib/manifest').read();
+
+program.parse(process.argv);
+
+if(program.args.length !== 1){
+    console.log('Usage: sb-builder snip [options] <ID>');
+    process.exit();
+}
+
+
+var info = _snip_handle_arguments(program.args[0]);
+
+if(! info.id in manifest.sources){
+    return next({
+        error: 'no_such_video',
+        no_such_video: 'Video with ID '+id+' has not been downloaded yet!'
+    });
+}
+var snipData = {};
+snipData.id = sprintf("%06d",+Object.keys(manifest.sounds).length+1);
+snipData.path = config.soundsPath+'/'+snipData.id;
+
+var srcPath = manifest.sources[info.id].path;
+
+async.waterfall([
+    function(next){
+        fs.copy(srcPath, snipData.path, next);
+    },
+    function(next){
+        spawn(config.soundEditCommand, [snipData.path]);
+    }],
+    function(err){
+    }
+);
+
+function _snip_handle_arguments(){
+    var id, t, url;
+
+    if(arguments[0].match(/youtube\.com/)){
+        var urlInfo = URL.parse(arguments[0]);
+        var params = qs.parse(urlInfo.query);
+        id = params.v;
+        t = params.t;
+    } else if(arguments[0].match(/youtu\.be/)){
+        var urlInfo = URL.parse(arguments[0]);
+        var params = qs.parse(urlInfo.query);
+        urlInfo.pathname.match(/^\/(\w+)$/);
+        id = RegExp.$1
+        t = params.t;
+    }
+    else { id = arguments[0]; }
+    var info = {};
+    if(t){ info.t = t; }
+    info.id = id;
+    return info;
+}

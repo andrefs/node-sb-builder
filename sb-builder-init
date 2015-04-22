@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var config  = require('./config').config;
+var fs = require('fs-extra');
+
+program.parse(process.argv);
+
+if(program.args.length !== 1){
+    console.log('Usage: sb-builder init [options] <name>');
+    process.exit();
+}
+
+var name = program.args[0];
+var manifest = require('./lib/manifest').create(name);
+var folders = [
+    config.tmpPath,
+    config.sourcesPath,
+    config.soundsPath
+];
+folders.forEach(function(folder){
+    fs.mkdirSync(folder);
+});
+
