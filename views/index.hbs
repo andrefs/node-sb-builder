@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>{{metadata.title}}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+        <!-- Place favicon.ico and apple-touch-icon(s) here  -->
+
+        <!-- load Ink's css from the cdn -->
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/ink-flex.min.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/font-awesome.min.css">
+
+        <!-- load Ink's css for IE8 -->
+        <!--[if lt IE 9 ]>
+            <link rel="stylesheet" href="http://cdn.ink.sapo.pt/3.1.7/css/ink-ie.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <![endif]-->
+
+        <!-- test browser flexbox support and load legacy grid if unsupported -->
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/modernizr.js"></script>
+        <script type="text/javascript">
+            Modernizr.load({
+              test: Modernizr.flexbox,
+              nope : 'http://cdn.ink.sapo.pt/3.1.7/css/ink-legacy.min.css'
+            });
+        </script>
+
+        <!-- load Ink's javascript files from the cdn -->
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/holder.js"></script>
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/ink-all.min.js"></script>
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/autoload.js"></script>
+    </head>
+
+    <body>
+        <div class="ink-grid">
+            <header class="">
+            </header>
+
+            <div class="column-group vertical-space">
+                <div class="xlarge-60 large-60 medium-60 all-100 push-center">
+                    <img src="holder.js/1650x300/ink/auto">
+                </div>
+            </div>
+
+            <h1>{{metadata.title}}</h1>
+            <div class="column-group gutters xlarge-60 large-60 medium-60 all-100 push-center">
+                {{#sounds}}
+                    {{> button}}
+                {{/sounds}}
+            </div>
+        </div>
+        <footer class="clearfix">
+            <div class="ink-grid">
+                <ul class="unstyled inline half-vertical-space">
+                    <li></li>
+                </ul>
+                <p class="note"></p>
+            </div>
+        </footer>
+    </body>
+
+</html>
+

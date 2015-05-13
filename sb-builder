@@ -17,7 +17,7 @@ program.version('0.0.1')
         .command('init <name>'    , 'kickoff a new soundboard project')
         .command('download <URL>' , 'download sound from Youtube URL provided, and save metadata in manifest')
         .command('snip <ID|URL>'  , 'open external sound edition application to extract sound snippet')
-        //.command('render'         , 'generates soundboard website')
+        .command('render'         , 'generates soundboard website')
         //.command('manifest'       , 'Perform operations based on the manifest')
         .parse(process.argv);
 
