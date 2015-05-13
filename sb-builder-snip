@@ -31,8 +31,11 @@ if(! info.id in manifest.sources){
 }
 var snipData = {};
 snipData.id       = sprintf("%06d",+Object.keys(manifest.sounds).length+1);
-snipData.path     = config.soundsPath+'/'+snipData.id+'.mp3';
 snipData.sourceID = info.id;
+snipData.paths    = {
+    mp3: config.soundsPath+'/'+snipData.id+'.mp3',
+    ogg: config.soundsPath+'/'+snipData.id+'.ogg'
+};
 
 var srcPath = manifest.sources[info.id].path;
 
@@ -41,16 +44,16 @@ async.waterfall([
     function(next){
         var timeOpts = _handleTimeOpts(srcPath, program);
         snipData.startsAt = timeOpts.from || null;
-        roughCutSnippet(srcPath, snipData.path, timeOpts, next);
+        roughCutSnippet(srcPath, snipData.paths.mp3, timeOpts, next);
     },
     // Open in external sound editing app
     function(next){
-        var soundEditApp = spawn(config.soundEditCommand, [snipData.path]);
+        var soundEditApp = spawn(config.soundEditCommand, [snipData.paths.mp3]);
         soundEditApp.on('close', next);
     },
     // Get sound snippet metadata
     function(res, next){
-        mp3info(snipData.path, function(err, info){
+        mp3info(snipData.paths.mp3, function(err, info){
             if(err){
                 console.log('Error extracting snippet info:',err);
                 return next(err);
@@ -58,21 +61,27 @@ async.waterfall([
             return next(null, info.length);
         });
     },
-    // Get snip transcription/description
+    // Get snippet transcription/description
     function(length,next){
         snipData.length = length;
         var rl = readline.createInterface({
             input  : process.stdin,
             output : process.stdout
         });
-        rl.question('Sound snippet transcription/description:\n> ', next);
+        rl.question('Sound snippet transcription/description:\n> ', function(text){
+            snipData.text = text;
+            return next();
+        });
+    },
+    // Generate .ogg version of snippet
+    function(next){
+        convertMP3toOGG(snipData.paths, {}, next);
     }],
-    function(text, err){
+    function(err){
         if(err){
             console.log('Error getting sound snippet:', err);
             return;
         }
-        snipData.text = text;
         manifest.writeSound(snipData);
         console.log("Saved sound snippet in manifest file");
         process.exit();
@@ -88,6 +97,29 @@ function _handleTimeOpts(srcPath, program){
         else { timeOpts.duration = 30; }
     }
     return timeOpts;
+}
+
+function convertMP3toOGG(paths, options, callback){
+    var stream = avconv([
+        '-i'     , 'pipe:0' , // read from stdin
+        '-vn'    ,
+        '-acodec', 'libvorbis',
+        '-ac'    , 2        , // channels
+        '-ab'    , '160k'   , // bitrate
+        '-ar'    , 48000    , // dont even know
+        '-f'     , 'ogg'    , // output format
+        'pipe:1'              // write to stdout
+    ]);
+
+    stream.once('exit', function(exitCode) {
+        return callback(exitCode?exitcode : null);
+    });
+    stream.on('error', function(err) {
+        console.error('Error generating .ogg version of snippet', err.stack);
+        throw err;
+    });
+    fs.createReadStream(paths.mp3).pipe(stream);
+    stream.pipe(fs.createWriteStream(paths.ogg));
 }
 
 function roughCutSnippet(srcPath, dstPath, options, callback){
