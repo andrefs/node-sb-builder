@@ -13,6 +13,9 @@
         <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/ink-flex.min.css">
         <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/font-awesome.min.css">
 
+        <!-- load local CSS files -->
+        <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+
         <!-- load Ink's css for IE8 -->
         <!--[if lt IE 9 ]>
             <link rel="stylesheet" href="http://cdn.ink.sapo.pt/3.1.7/css/ink-ie.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
@@ -45,10 +48,12 @@
             </div>
 
             <h1>{{metadata.title}}</h1>
-            <div class="column-group gutters xlarge-60 large-60 medium-60 all-100 push-center">
-                {{#sounds}}
-                    {{> button}}
-                {{/sounds}}
+            <div class="column-group gutters">
+                <div class="column-group xlarge-70 large-70 medium-70 all-100 push-center">
+                    {{#sounds}}
+                        {{> button}}
+                    {{/sounds}}
+                </div>
             </div>
         </div>
         <footer class="clearfix">
