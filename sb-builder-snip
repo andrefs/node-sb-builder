@@ -82,6 +82,7 @@ async.waterfall([
             console.log('Error getting sound snippet:', err);
             return;
         }
+        snipData.dateAdded = new Date().toISOString();
         manifest.writeSound(snipData);
         console.log("Saved sound snippet in manifest file");
         process.exit();

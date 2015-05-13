@@ -31,6 +31,7 @@ async.waterfall([
         source.tmpPath = config.tmpPath+'/'+source.id;
         source.title = info.title;
         source.length = +info.length_seconds;
+        source.dateDownloaded = new Date().toISOString();
 
         var formats = info.formats.filter(function(f){ return f.type.match(/audio\/webm/) ? true:false; });
         if(formats.length){ info.formats = [formats[0]]; }
