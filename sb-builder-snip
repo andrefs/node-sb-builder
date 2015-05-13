@@ -2,19 +2,24 @@
 
 var program  = require('commander');
 var config   = require('./config').config;
+var manifest = require('./lib/manifest').read();
 var sprintf  = require("sprintf-js").sprintf;
 var async    = require('async');
 var fs       = require('fs-extra');
-var spawn    = require('child_process').spawnSync;
-var manifest = require('./lib/manifest').read();
+var spawn    = require('child_process').spawn;
+var avconv   = require('avconv');
+var mp3info  = require('mp3info');
+var readline = require('readline');
 
-program.parse(process.argv);
+program
+    .option('-f, --from <n>', 'Sound snippet start time')
+    .option('-t, --to <n>',   'Sound snippet end time')
+    .parse(process.argv);
 
 if(program.args.length !== 1){
     console.log('Usage: sb-builder snip [options] <ID>');
     process.exit();
 }
-
 
 var info = _snip_handle_arguments(program.args[0]);
 
@@ -25,21 +30,100 @@ if(! info.id in manifest.sources){
     });
 }
 var snipData = {};
-snipData.id = sprintf("%06d",+Object.keys(manifest.sounds).length+1);
-snipData.path = config.soundsPath+'/'+snipData.id;
+snipData.id       = sprintf("%06d",+Object.keys(manifest.sounds).length+1);
+snipData.path     = config.soundsPath+'/'+snipData.id+'.mp3';
+snipData.sourceID = info.id;
 
 var srcPath = manifest.sources[info.id].path;
 
 async.waterfall([
+    // Create sound snippet file
     function(next){
-        fs.copy(srcPath, snipData.path, next);
+        var timeOpts = _handleTimeOpts(srcPath, program);
+        snipData.startsAt = timeOpts.from || null;
+        roughCutSnippet(srcPath, snipData.path, timeOpts, next);
     },
+    // Open in external sound editing app
     function(next){
-        spawn(config.soundEditCommand, [snipData.path]);
+        var soundEditApp = spawn(config.soundEditCommand, [snipData.path]);
+        soundEditApp.on('close', next);
+    },
+    // Get sound snippet metadata
+    function(res, next){
+        mp3info(snipData.path, function(err, info){
+            if(err){
+                console.log('Error extracting snippet info:',err);
+                return next(err);
+            }
+            return next(null, info.length);
+        });
+    },
+    // Get snip transcription/description
+    function(length,next){
+        snipData.length = length;
+        var rl = readline.createInterface({
+            input  : process.stdin,
+            output : process.stdout
+        });
+        rl.question('Sound snippet transcription/description:\n> ', next);
     }],
-    function(err){
+    function(text, err){
+        if(err){
+            console.log('Error getting sound snippet:', err);
+            return;
+        }
+        snipData.text = text;
+        manifest.writeSound(snipData);
+        console.log("Saved sound snippet in manifest file");
+        process.exit();
     }
 );
+
+function _handleTimeOpts(srcPath, program){
+    var timeOpts = {};
+    timeOpts.from = +program.from || 0 ;
+    if(program.duration){ timeOpts.duration = +program.duration; }
+    else {
+        if(timeOpts.to){ timeOpts.duration = +program.to-timeOpts.from; }
+        else { timeOpts.duration = 30; }
+    }
+    return timeOpts;
+}
+
+function roughCutSnippet(srcPath, dstPath, options, callback){
+    if(typeof options.from !== 'undefined'){
+        var from = options.from;
+        var duration = options.duration || (options.to ? (+options.to-options.from) : null) || 30;
+        var stream = avconv([
+            '-i'     , 'pipe:0' , // read from stdin
+            '-ss'    , from     , // start time
+            '-t'     , duration , // duration
+            '-ab'    , '160k'   , // bitrate
+            '-ac'    , 2        , // channels
+            '-ar'    , 44100    , // dont even know
+            '-f'     , 'mp3'    , // output format
+            'pipe:1'              // write to stdout
+        ]);
+
+        // Readable stream exits sooner than expecting due to
+        // avconv -t param
+        process.on('uncaughtException', function (err) {
+            if(err.code !== 'ECONNRESET'){
+                console.log(err);
+                throw err;
+            }
+        });
+        stream.once('exit', function(exitCode) {
+            return callback(exitCode?exitcode : null);
+        });
+        stream.on('error', function(err) {
+            console.error('Error cutting snippet', err.stack);
+            throw err;
+        });
+        fs.createReadStream(srcPath).pipe(stream);
+        stream.pipe(fs.createWriteStream(dstPath));
+    } else { return fs.copy(srcPath, dstPath, callback); }
+}
 
 function _snip_handle_arguments(){
     var id, t, url;
