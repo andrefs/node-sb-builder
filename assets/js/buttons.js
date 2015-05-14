@@ -11,11 +11,21 @@ if ( !sb)
 sb.buttons = {};
 
 sb.buttons.playSound = function(ev){
-    var button = Ink.Dom.Element.findUpwardsByClass(ev.target,'div.button');
+    var button = Ink.Dom.Element.findUpwardsBySelector(ev.target,'div.button');
     var a = Ink.s('audio', button);
     console.log('Playing button '+a.id);
+    sb.buttons.highlightButton(button);
 	window.top.location.hash = a.id;
 	a.play();
+};
+
+sb.buttons.highlightButton = function(button){
+    Ink.Dom.Element.scrollTo(button);
+    Ink.Dom.Css.addClassName(button, 'playing');
+};
+
+sb.buttons.unHighlightButton = function(button){
+    Ink.Dom.Css.removeClassName(button, 'playing');
 };
 
 sb.buttons.playNext = function(){
@@ -24,9 +34,13 @@ sb.buttons.playNext = function(){
     item_id = item_id.replace(/^#/,'');
     var audio = Ink.i(item_id);
     if(audio){
-        Ink.Dom.Event.observe(audio, 'ended', function(ev){ sb.buttons.playNext(ids); });
-        console.log('Playing button sequence: '+audio.id+' (and waiting '+(1000*audio.duration+200)+'ms)');
-    	//setInterval(function(){ sb.buttons.playNext(ids); },1000*audio.duration+200);
+        var button = Ink.Dom.Element.findUpwardsBySelector(audio, 'div.button');
+        Ink.Dom.Event.observe(audio, 'ended', function(ev){
+            sb.buttons.unHighlightButton(button);
+            sb.buttons.playNext(ids);
+        });
+        console.log('Playing button sequence: '+audio.id+')');
+        sb.buttons.highlightButton(button);
     	audio.play();
     }
 };
@@ -41,7 +55,8 @@ Ink.requireModules([
             'Ink.Dom.Loaded_1',
             'Ink.Dom.Element_1',
             'Ink.Dom.Event_1',
-    ],function(Loaded, InkElement, InkEvent){
+            'Ink.UI.SmoothScroller_1'
+    ],function(Loaded, InkElement, InkEvent, SmoothScroller){
 
     Loaded.run(function() { // will run on DOMContentLoaded
         InkEvent.observeMulti(Ink.ss('div.button'), 'click', sb.buttons.playSound);

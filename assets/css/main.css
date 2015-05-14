@@ -2,3 +2,22 @@
 div.button {
     padding: 10px;
 }
+
+div.button.playing {
+    background-color: orange;
+    -webkit-animation-name: btnHL; /* Chrome, Safari, Opera */
+    -webkit-animation-duration: 2s; /* Chrome, Safari, Opera */
+    animation-name: btnHL;
+    animation-duration: 2s;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes btnHL {
+    from {background-color: white;}
+    to {background-color: orange;}
+}
+/* Standard syntax */
+@keyframes btnHL {
+    from {background-color: white;}
+    to {background-color: orange;}
+}
