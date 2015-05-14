@@ -11,7 +11,7 @@ It will help you:
 
 ## Installing
 
-    npm install sb-builder
+    npm install -g sb-builder
 
 ## Initializing a soundboard
 
@@ -73,4 +73,4 @@ This manifest will be updated each time you download a new soundtrack or create 
 
 ## Bugs and stuff
 
-Mail me or make a Github issue request.
+Open a GitHub issue or, preferably, send me a pull request.
