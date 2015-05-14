@@ -4,9 +4,9 @@
 
 It will help you:
 
-* downloading soundtracks from Youtube videos, 
-* extracting sound snippets
-* generating soundboards HTML
+* downloading soundtracks from Youtube videos,
+* extracting sound snippets,
+* generating a soundboard webpage (HTML, assets folders, etc)
 
 
 ## Installing
@@ -26,7 +26,9 @@ It will help you:
 * `./sounds/` (for the edited sound snippets) and
 * `./tmp/` (a folder for temporary files).
 
-Additionally, a `manifest.json` file will be created to store all the information about the soundboard, its sources and sound snippets. This manifest will be updated each time you download a new soundtrack or create a new snippet, and will be later used to generate the soundboard webpage.
+Additionally, a `manifest.json` file will be created to store all the information about the soundboard, its sources and sound snippets.
+
+This manifest will be updated each time you download a new soundtrack or create a new snippet, and will be later used to generate the soundboard webpage.
 
 ## Adding (downloading) a new source
 
@@ -49,13 +51,22 @@ Additionally, a `manifest.json` file will be created to store all the informatio
 
     Options:
 
-        -t MMmSSs, --time MMmSSs        Time location of the start of the snippet
-        -d SS, --duration SS            Duration in seconds of the snippet
-        -e TEXT                         Transcription or description of the snippet
+        -f SS, --from SS        Time location of the start of the snippet (in seconds)
+        -d SS, --duration SS    Duration in seconds of the snippet
+        -e TEXT                 Transcription or description of the snippet (if you don't provide it, one will be asked later)
 
 ## Generate webpage
 
-    sb-builder render
+    sb-builder render <FOLDER>
+
+    FOLDER: the folder where to create the webpage
+
+`sb-builder` will create the FOLDER, copy all the sounds and other assets into it, and use the manifest file to render an index.html file for the soundboard.
+
+    Options:
+
+        -h FILE, --header FILE      Location of an header image file to be used in the soundboard index.html
+
 
 
 ##
