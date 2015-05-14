@@ -9,11 +9,11 @@ It will help you:
 * generating a soundboard webpage (HTML, assets folders, etc)
 
 
-## Installing
+## Install
 
     npm install -g sb-builder
 
-## Initializing a soundboard
+## Initialize a soundboard project
 
     sb-builder init <NAME>
 
@@ -30,7 +30,7 @@ Additionally, a `manifest.json` file will be created to store all the informatio
 
 This manifest will be updated each time you download a new soundtrack or create a new snippet, and will be later used to generate the soundboard webpage.
 
-## Adding (downloading) a new source
+## Add (download) a new source
 
     sb-builder download <URL>
 
@@ -38,7 +38,7 @@ This manifest will be updated each time you download a new soundtrack or create 
 
 `sb-builder` will get the video info, and download its soundtrack.
 
-## Create snippet
+## Create a sound snippet
 
     sb-builder snip <ID>
     sb-builder snip <URL>
@@ -55,7 +55,7 @@ This manifest will be updated each time you download a new soundtrack or create 
         -d SS, --duration SS    Duration in seconds of the snippet
         -e TEXT                 Transcription or description of the snippet (if you don't provide it, one will be asked later)
 
-## Generate webpage
+## Generate a soundboard webpage
 
     sb-builder render <FOLDER>
 
