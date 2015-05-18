@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var program  = require('commander');
-var config   = require('./config').config;
+var config   = require('./lib/config').config;
 var manifest = require('./lib/manifest').read();
 var sprintf  = require("sprintf-js").sprintf;
 var async    = require('async');

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var program  = require('commander');
-var config   = require('./config').config;
+var config   = require('./lib/config').config;
 var fs       = require('fs-extra');
 var manifest = require('./lib/manifest').read();
 var ytdl     = require('ytdl-core');

@@ -11,7 +11,7 @@ var URL     = require('url');
 var qs      = require('querystring');
 var sprintf = require("sprintf-js").sprintf;
 var spawn   = require('child_process').spawnSync;
-var config  = require('./config').config;
+var config  = require('./lib/config').config;
 
 program.version('0.0.1')
         .command('init <name>'    , 'kickoff a new soundboard project')

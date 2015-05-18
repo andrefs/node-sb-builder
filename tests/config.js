@@ -1,12 +1,13 @@
-
-var config  = {
+exports.config = {
+    manifest : {
+        version: 'test_v1',
+        filePath: './tests/',
+        fileName: 'manifest.json'
+    },
     sourcesPath       : './sources',
     soundsPath        : './sounds',
     tmpPath           : './tmp',
-    manifestVersion   : 'v1',
     defaultClipMargin : '2',
     soundEditCommand  : 'audacity'
 };
 
-
-exports.config = config;
