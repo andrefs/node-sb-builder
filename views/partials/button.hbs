@@ -5,14 +5,16 @@
 </div -->
 
 
-<div class="small-33 tiny-33 all-16 button">
+<div class="small-33 tiny-33 all-16 button" data-date="{{dateAdded}}">
     <audio class="escaxe" id="{{id}}" preload="auto">
         <source src="assets/{{paths.mp3}}">
         <source src="assets/{{paths.ogg}}">
     </audio>
     <a href="#{{id}}" class="align-center">
-        <!-- img src="holder.js/600x480/ink/auto" -->
-        <img class="button" src="assets/imgs/{{buttonImg}}">
+        <div class="button-image">
+            <img class="button" src="assets/imgs/{{buttonImg}}">
+            <span class="new-label ink-label green">NEW</span>
+        </div>
         <p class="button-text lead">{{text}}</p>
     </a>
 </div>

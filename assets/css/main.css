@@ -1,6 +1,35 @@
 
+/***********
+ * Header *
+ **********/
+
+header img#header-img {
+    border-radius: 10px;
+}
+
+/***********
+ * Buttons *
+ ***********/
+
 div.button {
     padding: 10px;
+    border-radius: 10px;
+}
+div.button-image {
+    position: relative;
+}
+div.button p.button-text {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+div.button .new-label {
+    display:none;
+    position: absolute;
+    right: 0;
+    bottom: -5px;
+}
+div.button.new .new-label {
+    display: inline;
 }
 
 div.button.playing {
@@ -21,3 +50,4 @@ div.button.playing {
     from {background-color: white;}
     to {background-color: orange;}
 }
+

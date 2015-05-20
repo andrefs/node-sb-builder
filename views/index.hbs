@@ -43,17 +43,16 @@
     <body>
         <div class="ink-grid">
             <header class="">
-            </header>
-
             <div class="column-group vertical-space">
                 <div class="xlarge-60 large-60 medium-60 all-100 push-center">
-                    <img src="holder.js/1650x300/ink/auto">
+                    <img id="header-img" src="holder.js/1650x300/ink/auto">
                 </div>
             </div>
+            </header>
 
             <h1>{{metadata.title}}</h1>
-            <div class="column-group gutters">
-                <div class="column-group xlarge-70 large-70 medium-70 all-100 push-center">
+            <div class="column-group gutters push-center">
+                <div class="column-group xlarge-70 large-70 medium-70 all-100 align-left">
                     {{#sounds}}
                         {{> button}}
                     {{/sounds}}

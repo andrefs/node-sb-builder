@@ -60,6 +60,16 @@ Ink.requireModules([
 
     Loaded.run(function() { // will run on DOMContentLoaded
         InkEvent.observeMulti(Ink.ss('div.button'), 'click', sb.buttons.playSound);
+        Ink.ss('div.button').forEach(function(button){
+            var snipDate = new Date(button.getAttribute('data-date'));
+            var weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate()-7);
+            if(snipDate > weekAgo){
+                Ink.Dom.Css.addClassName(button, 'new');
+            }
+        });
+
+
         var item_id = window.top.location.hash;
         if(item_id){
             sb.buttons.playSoundsByID(item_id);
