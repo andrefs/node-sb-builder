@@ -12,8 +12,9 @@ var mp3info  = require('mp3info');
 var readline = require('readline');
 
 program
-    .option('-f, --from <n>', 'Sound snippet start time')
-    .option('-t, --to <n>',   'Sound snippet end time')
+    .option('-f, --from <n>',     'Sound snippet start time')
+    .option('-t, --to <n>',       'Sound snippet end time')
+    .option('-d, --duration <n>', 'Sound snippet duration (alternative to --to)')
     .parse(process.argv);
 
 if(program.args.length !== 1){
@@ -94,7 +95,13 @@ function _handleTimeOpts(srcPath, program){
     timeOpts.from = +program.from || 0 ;
     if(program.duration){ timeOpts.duration = +program.duration; }
     else {
-        if(timeOpts.to){ timeOpts.duration = +program.to-timeOpts.from; }
+        if(program.to){
+            timeOpts.duration = +program.to-timeOpts.from;
+            if(timeOpts.duration < 0){
+                console.log("Sound snippet duration can't be < 0 ("+timeOpts.duration+"), using default...");
+                timeOpts.duration = 30;
+            }
+        }
         else { timeOpts.duration = 30; }
     }
     return timeOpts;
