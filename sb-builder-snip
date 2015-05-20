@@ -35,6 +35,7 @@ var snipData = {};
 snipData.id       = sprintf("%06d",+Object.keys(manifest.sounds).length+1);
 snipData.sourceID = info.id;
 snipData.paths    = {
+    tmp: config.tmpPath   +'/'+snipData.id+'.mp3',
     mp3: config.soundsPath+'/'+snipData.id+'.mp3',
     ogg: config.soundsPath+'/'+snipData.id+'.ogg'
 };
@@ -47,18 +48,18 @@ async.waterfall([
         var timeOpts = _handleTimeOpts(srcPath, program);
         snipData.startsAt = timeOpts.from || null;
         log.info("Extracting snippet from original source '"+snipData.sourceID+"' ...");
-        roughCutSnippet(srcPath, snipData.paths.mp3, timeOpts, next);
+        roughCutSnippet(srcPath, snipData.paths.tmp, timeOpts, next);
     },
     // Open in external sound editing app
     function(next){
         log.info('Opening sound snippet in external app ...');
-        var soundEditApp = spawn(config.soundEditCommand, [snipData.paths.mp3]);
+        var soundEditApp = spawn(config.soundEditCommand, [snipData.paths.tmp]);
         soundEditApp.on('close', next);
     },
     // Get sound snippet metadata
     function(res, next){
         log.info('Getting snippet metadata ...');
-        mp3info(snipData.paths.mp3, function(err, info){
+        mp3info(snipData.paths.tmp, function(err, info){
             if(err){
                 log.error('Error extracting snippet info:',err);
                 return next(err);
@@ -82,6 +83,13 @@ async.waterfall([
     function(next){
         log.info('Generating OGG version ...');
         convertMP3toOGG(snipData.paths, {}, next);
+    },
+    // Move .mp3 from temp folder to final path
+    function(next){
+        log.info('Moving MP3 version to final path ...');
+        var tmpPath = snipData.paths.tmp;
+        var finalPath = snipData.paths.mp3;
+        fs.rename(tmpPath, finalPath, next);
     }],
     function(err){
         if(err){
@@ -89,6 +97,7 @@ async.waterfall([
             return;
         }
         snipData.dateAdded = new Date().toISOString();
+        delete snipData.paths.tmp;
         manifest.writeSound(snipData);
         log.info('Finished!');
         process.exit();
@@ -131,7 +140,7 @@ function convertMP3toOGG(paths, options, callback){
         log.error('Error generating .ogg version of snippet', err.stack);
         throw err;
     });
-    fs.createReadStream(paths.mp3).pipe(stream);
+    fs.createReadStream(paths.tmp).pipe(stream);
     stream.pipe(fs.createWriteStream(paths.ogg));
 }
 
