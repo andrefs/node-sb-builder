@@ -2,12 +2,13 @@
 
 var program = require('commander');
 var config  = require('./lib/config').config;
-var fs = require('fs-extra');
+var fs      = require('fs-extra');
+var log     = require('./lib/log').log('sb-builder');
 
 program.parse(process.argv);
 
 if(program.args.length !== 1){
-    console.log('Usage: sb-builder init [options] <name>');
+    log.info('Usage: sb-builder init [options] <name>');
     process.exit();
 }
 
@@ -18,7 +19,9 @@ var folders = [
     config.sourcesPath,
     config.soundsPath
 ];
+log.info('Creating folders ...');
 folders.forEach(function(folder){
     fs.mkdirSync(folder);
 });
+log.info('Finished!');
 

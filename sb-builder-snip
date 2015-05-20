@@ -90,7 +90,7 @@ async.waterfall([
         }
         snipData.dateAdded = new Date().toISOString();
         manifest.writeSound(snipData);
-        log.info("Saved sound snippet in manifest file");
+        log.info('Finished!');
         process.exit();
     }
 );
