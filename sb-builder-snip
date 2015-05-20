@@ -10,6 +10,7 @@ var spawn    = require('child_process').spawn;
 var avconv   = require('avconv');
 var mp3info  = require('mp3info');
 var readline = require('readline');
+var log      = require('./lib/log').log('sb-builder');
 
 program
     .option('-f, --from <n>',     'Sound snippet start time')
@@ -18,7 +19,7 @@ program
     .parse(process.argv);
 
 if(program.args.length !== 1){
-    console.log('Usage: sb-builder snip [options] <ID>');
+    log.info('Usage: sb-builder snip [options] <ID>');
     process.exit();
 }
 
@@ -45,18 +46,21 @@ async.waterfall([
     function(next){
         var timeOpts = _handleTimeOpts(srcPath, program);
         snipData.startsAt = timeOpts.from || null;
+        log.info("Extracting snippet from original source '"+snipData.sourceID+"' ...");
         roughCutSnippet(srcPath, snipData.paths.mp3, timeOpts, next);
     },
     // Open in external sound editing app
     function(next){
+        log.info('Opening sound snippet in external app ...');
         var soundEditApp = spawn(config.soundEditCommand, [snipData.paths.mp3]);
         soundEditApp.on('close', next);
     },
     // Get sound snippet metadata
     function(res, next){
+        log.info('Getting snippet metadata ...');
         mp3info(snipData.paths.mp3, function(err, info){
             if(err){
-                console.log('Error extracting snippet info:',err);
+                log.error('Error extracting snippet info:',err);
                 return next(err);
             }
             return next(null, info.length);
@@ -76,16 +80,17 @@ async.waterfall([
     },
     // Generate .ogg version of snippet
     function(next){
+        log.info('Generating OGG version ...');
         convertMP3toOGG(snipData.paths, {}, next);
     }],
     function(err){
         if(err){
-            console.log('Error getting sound snippet:', err);
+            log.error('Error getting sound snippet:', err);
             return;
         }
         snipData.dateAdded = new Date().toISOString();
         manifest.writeSound(snipData);
-        console.log("Saved sound snippet in manifest file");
+        log.info("Saved sound snippet in manifest file");
         process.exit();
     }
 );
@@ -98,7 +103,7 @@ function _handleTimeOpts(srcPath, program){
         if(program.to){
             timeOpts.duration = +program.to-timeOpts.from;
             if(timeOpts.duration < 0){
-                console.log("Sound snippet duration can't be < 0 ("+timeOpts.duration+"), using default...");
+                log.warn("Sound snippet duration can't be < 0 ("+timeOpts.duration+"), using default ...");
                 timeOpts.duration = 30;
             }
         }
@@ -123,7 +128,7 @@ function convertMP3toOGG(paths, options, callback){
         return callback(exitCode?exitcode : null);
     });
     stream.on('error', function(err) {
-        console.error('Error generating .ogg version of snippet', err.stack);
+        log.error('Error generating .ogg version of snippet', err.stack);
         throw err;
     });
     fs.createReadStream(paths.mp3).pipe(stream);
@@ -149,7 +154,7 @@ function roughCutSnippet(srcPath, dstPath, options, callback){
         // avconv -t param
         process.on('uncaughtException', function (err) {
             if(err.code !== 'ECONNRESET'){
-                console.log(err);
+                log.error(err);
                 throw err;
             }
         });
@@ -157,7 +162,7 @@ function roughCutSnippet(srcPath, dstPath, options, callback){
             return callback(exitCode?exitcode : null);
         });
         stream.on('error', function(err) {
-            console.error('Error cutting snippet', err.stack);
+            log.error('Error cutting snippet', err.stack);
             throw err;
         });
         fs.createReadStream(srcPath).pipe(stream);
