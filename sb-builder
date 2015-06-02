@@ -14,11 +14,12 @@ var spawn   = require('child_process').spawnSync;
 var config  = require('./lib/config').config;
 
 program.version('0.0.1')
-        .command('init <name>'    , 'kickoff a new soundboard project')
-        .command('download <URL>' , 'download sound from Youtube URL provided, and save metadata in manifest')
-        .command('snip <ID|URL>'  , 'open external sound edition application to extract sound snippet')
-        .command('render'         , 'generates soundboard website')
-        //.command('manifest'       , 'Perform operations based on the manifest')
+        .command('init     <name>'    , 'kickoff a new soundboard project')
+        .command('download <URL>'     , 'download sound from Youtube URL provided, and save metadata in manifest')
+        .command('snip     <ID|URL>'  , 'open external sound edition application to extract sound snippet')
+        .command('fix      <SNIP_ID>' , 'fix (re-extract or re-edit) sound snippet')
+        .command('render'             , 'generates soundboard website')
+        //.command('manifest'         , 'Perform operations based on the manifest')
         .parse(process.argv);
 
 if(!program.args.length){ program.help(); }

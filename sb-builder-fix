@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+var program  = require('commander');
+var config   = require('./lib/config').config;
+var manifest = require('./lib/manifest').read();
+var log      = require('./lib/log').log('sb-builder');
+var snip     = require('./lib/snip').snip;
+
+program
+    .option('-f, --from <n>',     'Sound snippet start time')
+    .option('-t, --to <n>',       'Sound snippet end time')
+    .option('-d, --duration <n>', 'Sound snippet duration (alternative to --to)')
+    .parse(process.argv);
+
+if(program.args.length !== 1){
+    log.info('Usage: sb-builder fix [options] <SNIP_ID>');
+    process.exit(1);
+}
+
+var soundID = program.args[0];
+if(!manifest.sounds[soundID]){
+    log.error("There's no sound snippet with ID "+soundID+"!");
+    process.exit(1);
+}
+
+var sound = manifest.sounds[soundID];
+snip(sound.sourceID, manifest, {}, {soundID:soundID}, function(err){
+        console.log("Finished fixing sound "+soundID+".");
+        process.exit();
+    }
+);
+
