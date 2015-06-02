@@ -37,7 +37,7 @@ async.waterfall([
 
         var formats = info.formats.filter(function(f){ return f.type.match(/audio\/webm/) ? true:false; });
         if(formats.length){ info.formats = [formats[0]]; }
-        log.info("Downloading source file ...");
+        log.info("Downloading source file ["+source.title+"] ...");
         var video = ytdl.downloadFromInfo(info, {filter: 'audioonly'});
         video.pipe(fs.createWriteStream(source.tmpPath));
 
