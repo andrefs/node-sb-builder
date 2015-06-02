@@ -12,8 +12,9 @@ var qs      = require('querystring');
 var sprintf = require("sprintf-js").sprintf;
 var spawn   = require('child_process').spawnSync;
 var config  = require('./lib/config').config;
+var pjson = require('./package.json');
 
-program.version('0.0.1')
+program.version(pjson.version)
         .command('init     <name>'    , 'kickoff a new soundboard project')
         .command('download <URL>'     , 'download sound from Youtube URL provided, and save metadata in manifest')
         .command('snip     <ID|URL>'  , 'open external sound edition application to extract sound snippet')
