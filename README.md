@@ -55,6 +55,15 @@ This manifest will be updated each time you download a new soundtrack or create 
         -d SS, --duration SS    Duration in seconds of the snippet
         -e TEXT                 Transcription or description of the snippet (if you don't provide it, one will be asked later)
 
+## Fix a sound snippet
+
+    sb-builder snip <SOUND_ID>
+
+`sb-builder` will re-extract sound snippet SOUND\_ID, and run the whole `snip` process again
+
+    ID: The ID of sound snippet you wish to fix
+
+
 ## Generate a soundboard webpage
 
     sb-builder render <FOLDER>

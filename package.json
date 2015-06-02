@@ -1,6 +1,6 @@
 {
   "name": "sb-builder",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "CLI utility to generate Instant-type websites",
   "main": "sb-builder",
   "bin": {
@@ -26,5 +26,9 @@
   "license": "ISC",
   "devDependencies": {
     "mocha": "^2.2.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andrefs/sb-builder.git"
   }
 }
