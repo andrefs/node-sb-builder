@@ -13,6 +13,10 @@ sb.buttons = {};
 sb.buttons.playSound = function(ev){
     var button = Ink.Dom.Element.findUpwardsBySelector(ev.target,'div.button');
     var a = Ink.s('audio', button);
+    Ink.Dom.Event.observe(a, 'ended', function(ev){
+        console.log('Ended sound '+a.id);
+        sb.buttons.unHighlightButton(button);
+    });
     console.log('Playing button '+a.id);
     sb.buttons.highlightButton(button);
 	window.top.location.hash = a.id;
@@ -36,6 +40,7 @@ sb.buttons.playNext = function(){
     if(audio){
         var button = Ink.Dom.Element.findUpwardsBySelector(audio, 'div.button');
         Ink.Dom.Event.observe(audio, 'ended', function(ev){
+            console.log('Ended sound '+audio.id);
             sb.buttons.unHighlightButton(button);
             sb.buttons.playNext(ids);
         });

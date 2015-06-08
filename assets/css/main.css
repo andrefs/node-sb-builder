@@ -40,6 +40,8 @@ div.button.playing {
     animation-duration: 2s;
 }
 
+
+
 /* Chrome, Safari, Opera */
 @-webkit-keyframes btnHL {
     from {background-color: white;}
@@ -50,4 +52,3 @@ div.button.playing {
     from {background-color: white;}
     to {background-color: orange;}
 }
-
