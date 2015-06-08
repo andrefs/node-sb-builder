@@ -10,6 +10,7 @@ program
     .option('-f, --from <n>',     'Sound snippet start time')
     .option('-t, --to <n>',       'Sound snippet end time')
     .option('-d, --duration <n>', 'Sound snippet duration (alternative to --to)')
+    .option('-s, --same-file',    'No need to re-extract snippet, just edit existing file')
     .parse(process.argv);
 
 if(program.args.length !== 1){
@@ -24,7 +25,9 @@ if(!manifest.sounds[soundID]){
 }
 
 var sound = manifest.sounds[soundID];
-snip(sound.sourceID, manifest, {}, {soundID:soundID}, function(err){
+var opts = {soundID:soundID};
+if(program.sameFile){ opts.sameFile = true; }
+snip(sound.sourceID, manifest, {}, opts, function(err){
         console.log("Finished fixing sound "+soundID+".");
         process.exit();
     }
