@@ -47,7 +47,7 @@ This manifest will be updated each time you download a new soundtrack or create 
 
     ID: The Youtube ID of the source video soundtrack
     URL: The URL of the Youtube video, including the `t` parameter:
-        https://www.youtube.com/watch?v=O_HyZ5aW76c
+        https://www.youtube.com/watch?v=O_HyZ5aW76c&t=120s
 
     Options:
 
@@ -75,8 +75,8 @@ This manifest will be updated each time you download a new soundtrack or create 
     Options:
 
         -h FILE, --header FILE      Location of an header image file to be used in the soundboard index.html
-
-
+        -v FOLDER, --views-folder   FOLDER  Render project using custom views
+        -a FOLDER, --assets-folder  FOLDER  Render project using custom assets
 
 ##
 

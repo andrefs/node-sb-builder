@@ -7,7 +7,10 @@ var async    = require('async');
 var fs       = require('fs');
 var render   = require('./lib/render').render;
 
-program.parse(process.argv);
+program
+    .option('-v, --views-folder  <PATH>', 'Render project using custom views')
+    .option('-a, --assets-folder <PATH>', 'Render project using custom assets')
+    .parse(process.argv);
 
 if(program.args.length !== 1){
     console.log('Usage: sb-builder render [options] <FOLDER>');
@@ -15,9 +18,12 @@ if(program.args.length !== 1){
 }
 
 var folder = program.args[0];
+var opts = {};
+if(program.viewsFolder) { opts.viewsFolder  = program.viewsFolder;  }
+if(program.assetsFolder){ opts.assetsFolder = program.assetsFolder; }
 
 console.log("Rendering soundboard '"+manifest.metadata.name+"' into folder '"+folder+"':");
-return render(manifest, folder, function(err){
+return render(manifest, folder, opts, function(err){
         console.log("Finished rendering soundboard.");
         process.exit();
     }
