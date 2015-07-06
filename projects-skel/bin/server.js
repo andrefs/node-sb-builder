@@ -40,6 +40,7 @@ function mime(path){
         gif  : 'image/gif',
         jpg  : 'image/jpeg',
         png  : 'image/png',
+        svg  : 'image/svg+xml',
         mp3  : 'audio/mpeg',
         ogg  : 'audio/ogg'
     };
