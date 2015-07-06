@@ -13,6 +13,9 @@ sb.buttons = {};
 sb.buttons.playSound = function(ev){
     var button = Ink.Dom.Element.findUpwardsBySelector(ev.target,'div.button');
     var a = Ink.s('audio', button);
+    Ink.requireModules(['Ink.Dom.Event_1'], function(InkEvent){
+        InkEvent.stopDefault(ev);
+    });
     Ink.Dom.Event.observe(a, 'ended', function(ev){
         console.log('Ended sound '+a.id);
         sb.buttons.unHighlightButton(button);
@@ -23,8 +26,8 @@ sb.buttons.playSound = function(ev){
 	a.play();
 };
 
-sb.buttons.highlightButton = function(button){
-    Ink.Dom.Element.scrollTo(button);
+sb.buttons.highlightButton = function(button, scroll){
+    if(scroll){ Ink.Dom.Element.scrollTo(button); }
     Ink.Dom.Css.addClassName(button, 'playing');
 };
 
@@ -45,7 +48,7 @@ sb.buttons.playNext = function(){
             sb.buttons.playNext(ids);
         });
         console.log('Playing button sequence: '+audio.id+')');
-        sb.buttons.highlightButton(button);
+        sb.buttons.highlightButton(button, true);
     	audio.play();
     }
 };
@@ -60,8 +63,7 @@ Ink.requireModules([
             'Ink.Dom.Loaded_1',
             'Ink.Dom.Element_1',
             'Ink.Dom.Event_1',
-            'Ink.UI.SmoothScroller_1'
-    ],function(Loaded, InkElement, InkEvent, SmoothScroller){
+    ],function(Loaded, InkElement, InkEvent){
 
     Loaded.run(function() { // will run on DOMContentLoaded
         InkEvent.observeMulti(Ink.ss('div.button'), 'click', sb.buttons.playSound);
