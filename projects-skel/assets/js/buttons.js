@@ -1,7 +1,7 @@
 
-/*
-  SAPO Noticias toolkit - News Stand
- */
+/**************
+ * sb-builder *
+ **************/
 
 var sb = window.sb;
 if ( !sb)
