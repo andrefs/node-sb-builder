@@ -13,6 +13,10 @@ It will help you:
 
     npm install -g sb-builder
 
+### Dependencies
+
+* libav-tools (Ubuntu or Debian-based distros)
+
 ## Initialize a soundboard project
 
     sb-builder init <NAME>
