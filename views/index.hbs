@@ -11,7 +11,7 @@
 {{#if project.url}}
         <meta property="og:url"         content="{{project.url}}"/>
 {{/if}}
-        <meta property="og:image"       content="assets/imgs/face.png"/>
+        <meta property="og:image"       content="{{project.url}}/assets/imgs/face.png"/>
         <meta property="og:site_name"   content="{{project.title}}"/>
 {{#if project.description}}
         <meta property="og:description" content="{{project.description}}"/>
@@ -84,7 +84,8 @@
                                     <div class="fb-like pull-right" data-href="{{project.url}}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div>
                                 </div>
 {{/if}}
-{{#if project.twitter.id}}
+{{#if project.url}}
+		                        <!-- Twitter Share -->
                                 <div class="twitter share">
                                     <a href="https://twitter.com/share" class="twitter-share-button pull-right" data-hashtags="{{project.twitter.hashtag}}">Tweet</a>
                                 </div>
@@ -111,7 +112,7 @@
                                             <div class="fb-like pull-right" data-href="{{project.url}}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div>
                                         </div>
 {{/if}}
-{{#if project.twitter.id}}
+{{#if project.url}}
                                         <div class="twitter share">
                                             <a href="https://twitter.com/share" class="twitter-share-button pull-right" data-hashtags="{{project.twitter.hashtag}}">Tweet</a>
                                         </div>
@@ -123,7 +124,7 @@
                         <footer>
                             <p class="authors">
                             {{#if partials.footer}}
-                                {{partials.footer}}
+                                {{{partials.footer}}}
                             {{else}}
                                 Copyright 2015
                             {{/if}}
@@ -134,7 +135,7 @@
             </div>
         </div>
 
-{{#if project.twitter.id}}
+{{#if project.url}}
 		<!-- Twitter Share -->
 		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 {{/if}}

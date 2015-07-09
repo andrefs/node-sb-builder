@@ -75,7 +75,7 @@ async.waterfall([
         fs.rename(tmpPath, finalPath, next);
     }],
     function(err){
-        if(err){ log.err(err);           }
+        if(err){ log.error(err);           }
         else { manifest.writeSource(source); }
         //manifest.save();
         log.info('Finished!');
