@@ -1,3 +1,95 @@
+html, body {
+    width: 100%;
+    font-family: 'Lato';
+    color: white;
+    background-color: #1C1B1F;
+}
+
+a {
+    color: #ffffff;
+}
+a:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+header {
+    width: 100%;
+    margin-top: 50px;
+    min-height: 100px;
+    margin-left: 20px;
+}
+
+h1 {
+    font-weight: normal;
+    color: #ffffff;
+}
+
+h1.t-large {
+    font-size: 2.3em;
+}
+
+h1.t-small {
+    font-size: 2.3em;
+    font-size: 8vw;
+}
+
+/**************
+ * Background *
+ **************/
+
+.background {
+    position:fixed;
+    top    : 0;
+    bottom : -100px;
+    left   : -1000px;
+    right  : -1000px;
+
+    background: url(../imgs/bg.jpg) no-repeat fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    -webkit-filter : blur(20px) brightness(0.5);
+    -moz-filter    : blur(20px) brightness(0.5);
+    -o-filter      : blur(20px) brightness(0.5);
+    -ms-filter     : blur(20px) brightness(0.5);
+    filter         : blur(20px) brightness(0.5);
+}
+
+/*
+.content:before {
+  content: "";
+  position: fixed;
+  z-index: -1;
+
+  display: block;
+  background: url(../imgs/bg.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width:  1200px;
+  height:  800px;
+
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
+*/
+
+.content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  height:auto;
+  margin-left: 20px;
+  margin-right: 20px;
+}
 
 /***********
  * Header *
@@ -7,18 +99,63 @@ header img#header-img {
     border-radius: 10px;
 }
 
+/********
+ * Face *
+ ********/
+
+div.face-container {
+    float: right;
+    width: 180px;
+}
+
+div.face {
+    position:fixed;
+    width: 180px;
+}
+
+div.face > p {
+    font-size: 2em;
+    text-transform: uppercase;
+}
+
+@-webkit-keyframes play {
+    100% { background-position: -1610px; }
+}
+
+div.face-image > a.fb-link {
+    display: block;
+    width:100%;
+    height:100%;
+}
+div.face-image {
+    width: 230px;
+    height: 306px;
+    background: url('../imgs/face-sprite.png') left center;
+    background-repeat: no-repeat;
+}
+div.face-image.speaking {
+    -webkit-animation: play .5s steps(7) infinite;
+}
+
 /***********
  * Buttons *
  ***********/
 
+div.button:hover {
+    background-color: rgba(0,0,0,0.3);
+}
+
 div.button {
-    padding: 10px;
+    padding: 2%;
     border-radius: 10px;
 }
 div.button-image {
+    padding: 10px;
     position: relative;
+    margin-bottom: 20px;
 }
 div.button p.button-text {
+    font-size: 1em;
     margin-top: 5px;
     margin-bottom: 5px;
 }
@@ -33,7 +170,7 @@ div.button.new .new-label {
 }
 
 div.button.playing {
-    background-color: orange;
+    background-color: rgba(163, 125, 55, 0.45);
     -webkit-animation-name: btnHL; /* Chrome, Safari, Opera */
     -webkit-animation-duration: 2s; /* Chrome, Safari, Opera */
     animation-name: btnHL;
@@ -44,11 +181,27 @@ div.button.playing {
 
 /* Chrome, Safari, Opera */
 @-webkit-keyframes btnHL {
-    from {background-color: white;}
-    to {background-color: orange;}
+    from {background-color: rgba(255, 255, 255, 0.48);}
+    to {background-color: rgba(163, 125, 55, 0.45);}
 }
 /* Standard syntax */
 @keyframes btnHL {
-    from {background-color: white;}
-    to {background-color: orange;}
+    from {background-color: rgba(255, 255, 255, 0.48);}
+    to {background-color: rgba(163, 125, 55, 0.45);}
+}
+
+footer > p.authors {
+    font-size: 15px;
+    border-top: 1px solid #ffffff;
+    margin-top: 30px;
+}
+
+div.share-buttons > div.share {
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    width: 78px;
+}
+div.share.fb {
+    margin-top: -3px;
 }

@@ -4,22 +4,32 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>{{metadata.title}}</title>
+        <title>{{project.title}}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
-        <meta property="og:title"       content="{{metadata.og.title}}"/>
-        <meta property="og:url"         content="{{metadata.og.url}}"/>
-        <meta property="og:image"       content="{{metadata.og.image}}"/>
-        <meta property="og:site_name"   content="{{metadata.og.site_name}}"/>
-        <meta property="og:description" content="{{metadata.og.description}}"/>
+        <meta property="og:title"       content="{{project.title}}"/>
+{{#if project.url}}
+        <meta property="og:url"         content="{{project.url}}"/>
+{{/if}}
+        <meta property="og:image"       content="assets/imgs/face.png"/>
+        <meta property="og:site_name"   content="{{project.title}}"/>
+{{#if project.description}}
+        <meta property="og:description" content="{{project.description}}"/>
+{{/if}}
         <meta property="og:type"        content="website"/>
-        <meta property="fb:admins"      content="{{metadata.fb.admin}}" />
+{{#if project.facebook.id}}
+        <meta property="fb:admins"      content="{{project.facebook.id}}" />
+{{/if}}
 
         <!-- Place favicon.ico and apple-touch-icon(s) here  -->
 
         <!-- load Ink's css from the cdn -->
         <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/ink-flex.min.css">
         <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/font-awesome.min.css">
+
+        <!-- Google Font -->
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine">
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
         <!-- load local CSS files -->
         <link rel="stylesheet" type="text/css" href="assets/css/main.css">
@@ -49,6 +59,7 @@
     </head>
 
     <body>
+{{#if project.facebook.id}}
   <div id="fb-root"></div>
   <script>(function(d, s, id) {
 	    var js, fjs = d.getElementsByTagName(s)[0];
@@ -57,37 +68,78 @@
 			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
 			    fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));</script>
+{{/if}}
 
-        <div class="ink-grid">
-            <header class="">
-            <div class="column-group vertical-space">
-                <div class="xlarge-60 large-60 medium-60 all-100 push-center">
-                    <img id="header-img" src="holder.js/1650x300/ink/auto">
-                </div>
-            </div>
-            </header>
+        <div class="background"></div>
+        <div class="content">
+            <div class="ink-grid">
+                <div class="column-group gutters push-center">
+                    <div class="column-group xlarge-75 large-75 all-100 push-center">
+                        <header class="align-left xlarge-90 large-90 all-100">
+                            <h1 class="t-large hide-medium hide-small hide-tiny">{{project.title}}</h1>
+                            <h1 class="t-small hide-xlarge hide-large">{{project.title}}</h1>
+                            <div class="column-group share-buttons all-100 push-left hide-xlarge hide-large">
+{{#if project.facebook.id}}
+                                <div class="fb share">
+                                    <div class="fb-like pull-right" data-href="{{project.url}}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div>
+                                </div>
+{{/if}}
+{{#if project.twitter.id}}
+                                <div class="twitter share">
+                                    <a href="https://twitter.com/share" class="twitter-share-button pull-right" data-hashtags="{{project.twitter.hashtag}}">Tweet</a>
+                                </div>
+{{/if}}
+                            </div>
+                        </header>
+                        <div class="column-group xlarge-70 large-70  all-100 align-left">
+                            {{#sounds}}
+                                {{> button}}
+                            {{/sounds}}
+                        </div>
+                        <div class="xlarge-25 large-25 hide-medium hide-small hide-tiny" style="position:relative;">
+                            <div class="face-container">
+                                <div class="face">
+                                    <div class="face-image">
+                                        <a class="fb-link" href="{{project.external_link}}"></a>
+                                    </div>
+                                    <!-- img class="face speaking" src="assets/imgs/bg-sprite.png" /-->
+                                    <!--p class="align-center">Beatriz Gosta</p-->
 
-            <h1>{{metadata.title}}</h1>
-            <div class="column-group gutters push-center">
-                <div class="column-group xlarge-70 large-70 medium-70 all-100 align-left">
-                    {{#sounds}}
-                        {{> button}}
-                    {{/sounds}}
+                                    <div class="column-group share-buttons all-100 push-left">
+{{#if project.facebook.id}}
+                                        <div class="fb share">
+                                            <div class="fb-like pull-right" data-href="{{project.url}}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div>
+                                        </div>
+{{/if}}
+{{#if project.twitter.id}}
+                                        <div class="twitter share">
+                                            <a href="https://twitter.com/share" class="twitter-share-button pull-right" data-hashtags="{{project.twitter.hashtag}}">Tweet</a>
+                                        </div>
+{{/if}}
+                                    </div><!-- /.share-buttons -->
+                                </div>
+                            </div>
+                        </div>
+                        <footer>
+                            <p class="authors">
+                            {{#if partials.footer}}
+                                {{partials.footer}}
+                            {{else}}
+                                Copyright 2015
+                            {{/if}}
+                            </p>
+                        </footer>
+                    </div>
                 </div>
             </div>
         </div>
-        <footer class="clearfix">
-            <div class="ink-grid">
-                <ul class="unstyled inline half-vertical-space">
-                    <li></li>
-                </ul>
-                <p class="note"></p>
-            </div>
-        </footer>
 
+{{#if project.twitter.id}}
 		<!-- Twitter Share -->
 		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+{{/if}}
 
+{{#if project.google.id}}
         <!-- Google Analytics -->
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -95,8 +147,9 @@
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
           })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-          ga('create', '{{metadata.google.analytics.id}}', 'auto');
+          ga('create', '{{project.google.id}}', 'auto');
           ga('send', 'pageview');
+{{/if}}
 
         </script>
     </body>
