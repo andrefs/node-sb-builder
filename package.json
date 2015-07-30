@@ -1,6 +1,6 @@
 {
   "name": "sb-builder",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "CLI utility to generate Instant-type websites",
   "main": "sb-builder",
   "bin": {
