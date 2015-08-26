@@ -12,6 +12,7 @@ var mp3info  = require('mp3info');
 var readline = require('readline');
 var snip     = require('./lib/snip').snip;
 var log      = require('./lib/log').log('sb-builder');
+var qs       = require('querystring');
 
 program
     .option('-f, --from <n>',     'Sound snippet start time')
@@ -58,12 +59,12 @@ function _snip_handle_arguments(){
     var id, t, url;
 
     if(arguments[0].match(/youtube\.com/)){
-        var urlInfo = URL.parse(arguments[0]);
+        var urlInfo = require('url').parse(arguments[0]);
         var params = qs.parse(urlInfo.query);
         id = params.v;
         t = params.t;
     } else if(arguments[0].match(/youtu\.be/)){
-        var urlInfo = URL.parse(arguments[0]);
+        var urlInfo = require('url').parse(arguments[0]);
         var params = qs.parse(urlInfo.query);
         urlInfo.pathname.match(/^\/(\w+)$/);
         id = RegExp.$1

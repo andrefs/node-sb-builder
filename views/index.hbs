@@ -20,6 +20,12 @@
 {{#if project.facebook.id}}
         <meta property="fb:admins"      content="{{project.facebook.id}}" />
 {{/if}}
+{{#if project.author}}
+        <meta property="article:author" content="{{project.author}}" />
+{{/if}}
+{{#if project.publisher}}
+        <meta property="article:publisher" content="{{project.publisher}}" />
+{{/if}}
 
         <!-- Place favicon.ico and apple-touch-icon(s) here  -->
 
@@ -71,6 +77,19 @@
 {{/if}}
 
         <div class="background"></div>
+        <div id="topbar">
+            <nav class="ink-navigation ink-grid ie7">
+                <ul class="menu horizontal black push-left medium-push-center small-push-center tiny-push-center">
+                    <li class="hide-all show-tiny show-small show-medium"><button class="fa fa-bars"></button></li>
+                    <li class="logoPlaceholder"><a href="http://botoes.co/" class="logoPlaceholder">Botoes.co</a></li>
+                </ul>
+                <ul class="menu horizontal black push-right hide-small hide-tiny hide-medium">
+        {{#toplinks}}
+                    <li><a href="{{link}}" title="{{title}}">{{title}}</a></li>
+        {{/toplinks}}
+                </ul>
+            </nav>
+        </div>
         <div class="content">
             <div class="ink-grid">
                 <div class="column-group gutters push-center">
@@ -98,7 +117,7 @@
                                 {{> button}}
                             {{/sounds}}
                         </div>
-                        <div class="xlarge-25 large-25 hide-medium hide-small hide-tiny" style="position:relative;">
+                        <div id="right-column" class="xlarge-25 large-25 hide-medium hide-small hide-tiny">
                             <div class="face-container">
                                 <div class="face">
                                     <div class="face-image">

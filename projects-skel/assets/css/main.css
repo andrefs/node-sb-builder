@@ -212,3 +212,15 @@ div.share.fb {
 div.like.fb {
     margin-top: -3px;
 }
+
+#topbar {
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    background: #1a1a1a;
+    top: 0;
+}
+#right-column {
+    position: relative;
+    margin-left: 20px;
+}
