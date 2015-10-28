@@ -69,11 +69,11 @@ ul.menu li a, ul.menu li button {
     -o-background-size: cover;
     background-size: cover;
 
-    -webkit-filter : blur(20px) brightness(0.5);
-    -moz-filter    : blur(20px) brightness(0.5);
-    -o-filter      : blur(20px) brightness(0.5);
-    -ms-filter     : blur(20px) brightness(0.5);
-    filter         : blur(20px) brightness(0.5);
+    /* -webkit-filter : blur(20px) brightness(0.5); */
+    /* -moz-filter    : blur(20px) brightness(0.5); */
+    /* -o-filter      : blur(20px) brightness(0.5); */
+    /* -ms-filter     : blur(20px) brightness(0.5); */
+    /* filter         : blur(20px) brightness(0.5); */
 }
 
 /*
