@@ -1,6 +1,6 @@
 html, body {
     width: 100%;
-    font-family: 'Lato';
+    font-family: 'Bad Script', cursive;
     color: white;
     background-color: #1C1B1F;
 }
@@ -15,7 +15,7 @@ a:hover {
 
 header {
     width: 100%;
-    margin-top: 50px;
+    margin-top: 120px;
     min-height: 100px;
     margin-left: 20px;
 }
@@ -32,6 +32,24 @@ h1.t-large {
 h1.t-small {
     font-size: 2.3em;
     font-size: 8vw;
+}
+
+/********
+ * Menu *
+ ********/
+
+ul#left-menu {
+    background-color: #1a1a1a;
+    padding-top: 12px;
+}
+
+
+ul#left-menu li > a {
+    color: inherit;
+}
+
+ul.menu li a, ul.menu li button {
+    outline: none;
 }
 
 /**************
@@ -220,7 +238,57 @@ div.like.fb {
     background: #1a1a1a;
     top: 0;
 }
+
+#topbar .ink-navigation ul.menu li > a {
+    line-height: 60px;
+    font-size: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 #right-column {
     position: relative;
     margin-left: 20px;
+}
+
+#topbar .ink-navigation ul.black li button.fa-bars {
+    background: 0 0;
+    font-size: 1.6em;
+    color: #bbb;
+    border: 0;
+    padding: .8em .8em .8em 0;
+    float: left;
+}
+
+body.ink-drawer .left-drawer li>a, body.ink-drawer .right-drawer li>a {
+    display: block;
+    padding: 6px 15px;
+    color: #bbb;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: .875em;
+}
+
+body.ink-drawer .left-drawer li, body.ink-drawer .right-drawer li {
+    display: block;
+    margin: 0;
+    font-weight: 300;
+}
+
+body.ink-drawer .left-drawer ul, body.ink-drawer .right-drawer ul {
+    margin: 59px 0 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+body.ink-drawer.push.left .content-drawer, body.ink-drawer.push.left .left-drawer {
+    -webkit-transform: translate(220px,0);
+    -moz-transform: translate(220px,0);
+    -ms-transform: translate(220px,0);
+    -o-transform: translate(220px,0);
+    transform: translate(220px,0);
+}
+
+li:focus {
+    outline: none;
 }

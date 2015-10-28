@@ -35,7 +35,7 @@
 
         <!-- Google Font -->
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine">
-        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Bad+Script' rel='stylesheet' type='text/css'>
 
         <!-- load local CSS files -->
         <link rel="stylesheet" type="text/css" href="assets/css/main.css">
@@ -64,7 +64,7 @@
 
     </head>
 
-    <body>
+    <body class="ink-drawer">
 {{#if project.facebook.id}}
   <div id="fb-root"></div>
   <script>(function(d, s, id) {
@@ -80,7 +80,7 @@
         <div id="topbar">
             <nav class="ink-navigation ink-grid ie7">
                 <ul class="menu horizontal black push-left medium-push-center small-push-center tiny-push-center">
-                    <li class="hide-all show-tiny show-small show-medium"><button class="fa fa-bars"></button></li>
+                    <li class="hide-all show-tiny show-small show-medium"><button class="fa fa-bars left-drawer-trigger"></button></li>
                     <li class="logoPlaceholder"><a href="http://botoes.co/" class="logoPlaceholder">Botoes.co</a></li>
                 </ul>
                 <ul class="menu horizontal black push-right hide-small hide-tiny hide-medium">
@@ -90,7 +90,14 @@
                 </ul>
             </nav>
         </div>
-        <div class="content">
+        <div class="left-drawer">
+            <ul id="left-menu" class="menu black">
+            {{#toplinks}}
+                <li><a href="{{link}}" title="{{title}}">{{title}}</a></li>
+            {{/toplinks}}
+            </ul>
+        </div>
+        <div class="content content-drawer">
             <div class="ink-grid">
                 <div class="column-group gutters push-center">
                     <div class="column-group xlarge-75 large-75 all-100 push-center">
