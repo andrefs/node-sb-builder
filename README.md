@@ -1,12 +1,12 @@
 # sb-builder: A CLI to build soundboard websites from Youtube videos
 
-`sb-builder` is a node.js CLI application which helps building soundboards -- webpages with buttons which play sounds when you click on them.
+`sb-builder` is a node.js CLI application which helps building soundboards -- HTML pages with buttons which play sounds when clicked.
 
 It will help you:
 
 * downloading soundtracks from Youtube videos,
 * extracting sound snippets,
-* generating a soundboard webpage (HTML, assets folders, etc)
+* generating a soundboard webpage (HTML, static assets, etc)
 
 
 ## Install
@@ -32,7 +32,7 @@ It will help you:
 
 Additionally, a `manifest.json` file will be created to store all the information about the soundboard, its sources and sound snippets.
 
-This manifest will be updated each time you download a new soundtrack or create a new snippet, and will be later used to generate the soundboard webpage.
+This manifest will be updated each time you download a new soundtrack or create a new snippet, and will be later used to generate the soundboard HTML page.
 
 ## Add (download) a new source
 
@@ -40,7 +40,7 @@ This manifest will be updated each time you download a new soundtrack or create 
 
     URL: the URL of a Youtube video
 
-`sb-builder` will get the video info, and download its soundtrack.
+`sb-builder` will get the video metadata, and download its soundtrack.
 
 ## Create a sound snippet
 
@@ -68,11 +68,11 @@ This manifest will be updated each time you download a new soundtrack or create 
     ID: The ID of sound snippet you wish to fix
 
 
-## Generate a soundboard webpage
+## Generate a soundboard HTML page
 
     sb-builder render <FOLDER>
 
-    FOLDER: the folder where to create the webpage
+    FOLDER: the folder where to create the HTML page
 
 `sb-builder` will create the FOLDER, copy all the sounds and other assets into it, and use the manifest file to render an index.html file for the soundboard.
 

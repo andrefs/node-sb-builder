@@ -59,7 +59,7 @@ function cache(path){
         html : 'public, max-age=60'      ,  // 1 min
         htm  : 'public, max-age=60'      ,  // 1 min
         js   : 'public, max-age=300'     ,  // 5 min
-        css  : 'public, max-age=300'     ,  // 2 weeks
+        css  : 'public, max-age=300'     ,  // 5 min
         gif  : 'public, max-age=1800'    ,  // 2 weeks
         jpg  : 'public, max-age=1800'    ,  // 2 weeks
         png  : 'public, max-age=1800'    ,  // 2 weeks
