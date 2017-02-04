@@ -4,6 +4,7 @@ var program = require('commander');
 var config  = require('./lib/config').config;
 var fs      = require('fs-extra');
 var log     = require('./lib/log').log('sb-builder');
+var init    = require('./lib/init').init;
 
 program.parse(process.argv);
 
@@ -13,15 +14,9 @@ if(program.args.length !== 1){
 }
 
 var name = program.args[0];
-var manifest = require('./lib/manifest').create(name);
-var folders = [
-    config.tmpPath,
-    config.sourcesPath,
-    config.soundsPath
-];
-log.info('Creating folders ...');
-folders.forEach(function(folder){
-    fs.mkdirSync(folder);
-});
-log.info('Finished!');
 
+console.log("Initializing soundboard "+name+" in the current folder ...");
+return init(name, function(err){
+  console.log("Soundboard initialized.");
+  process.exit();
+}),
