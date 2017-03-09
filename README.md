@@ -1,5 +1,7 @@
 # sb-builder: A CLI to build soundboard websites from Youtube videos
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/andrefs/node-sb-builder.svg)](https://greenkeeper.io/)
+
 `sb-builder` is a node.js CLI application which helps building soundboards -- webpages with buttons which play sounds when you click on them.
 
 It will help you:
