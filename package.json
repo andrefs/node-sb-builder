@@ -1,6 +1,6 @@
 {
   "name": "sb-builder",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "CLI utility to generate Instant-type websites",
   "main": "sb-builder",
   "bin": {
@@ -29,6 +29,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/andrefs/sb-builder.git"
+    "url": "git://github.com/andrefs/node-sb-builder.git"
   }
 }
